@@ -1,7 +1,7 @@
 package infrastructure
 
 import (
-    "github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"
 )
 
 type MessageRoutes struct {
@@ -15,6 +15,7 @@ func NewMessageRoutes(getMessagesController *MessageController) *MessageRoutes {
 func (r *MessageRoutes) AttachRoutes(router *gin.Engine) {
     messagesGroup := router.Group("/messages")
     {
+        
         messagesGroup.GET("/", func(c *gin.Context) {
             r.GetMessagesController.GetMessages(c.Writer, c.Request)
         })

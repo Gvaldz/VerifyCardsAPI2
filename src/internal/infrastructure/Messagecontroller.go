@@ -1,21 +1,33 @@
 package infrastructure
 
 import (
-    "encoding/json"
-    "net/http"
+	"encoding/json"
+	"net/http"
+	"pedidos/src/internal/application"
 )
 
 type MessageController struct {
-    consumer *RabbitMQConsumer
+	getMessageUseCase    *application.GetMessageUseCase
+	createMessageUseCase *application.CreateMessageUseCase
 }
 
-func NewMessageController(consumer *RabbitMQConsumer) *MessageController {
-    return &MessageController{consumer: consumer}
+func NewMessageController(
+	getMessageUseCase *application.GetMessageUseCase,
+	createMessageUseCase *application.CreateMessageUseCase,
+) *MessageController {
+	return &MessageController{
+		getMessageUseCase:    getMessageUseCase,
+		createMessageUseCase: createMessageUseCase,
+	}
 }
 
 func (c *MessageController) GetMessages(w http.ResponseWriter, r *http.Request) {
-    messages := c.consumer.GetMessages()
+	message, err := c.getMessageUseCase.Execute()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-    w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(messages)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(message)
 }

@@ -2,7 +2,7 @@ package domain
 
 import "pedidos/src/internal/domain/entities"
 
-type OrderRepository interface {
-    CreateOrder() (entities.Order, error)
-    GetOrderByID(orderID int) (entities.Order, error)
+type MessageRepository interface {
+    CreateMessage(content string) (entities.Message, error)
+    GetLastMessage() (entities.Message, error) 
 }
